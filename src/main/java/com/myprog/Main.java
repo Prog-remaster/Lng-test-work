@@ -26,8 +26,27 @@ public class Main {
         return cs.toString().indexOf(searchChar.toString(), start);
     }
 
+    private static void replaceKeys(Map<String, Integer> keysMap, LinkedHashSet<String> oldGroup, int newGroupNumber) {
+        for (String line : oldGroup) {
+            String[] points = line.split(";");
+
+            int pointsCounter = 0;
+            for (String point : points) {
+                pointsCounter++;
+                String key = point.replaceAll("\"", "");
+                if (key.isEmpty()) {
+                    continue;
+                }
+                key += "_" + pointsCounter;
+
+                keysMap.remove(key);
+                keysMap.put(key, newGroupNumber);
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        if (args.length == 0) {
+        if (args.length == 0 || args[0] == null) {
             throw new NullPointerException("filename parameter is not set");
         }
         String filename = args[0];
@@ -68,14 +87,21 @@ public class Main {
                     if (currentGroupNumber == -1 && keysMap.containsKey(key)) {
                         currentGroupNumber = keysMap.get(key);
                     }
+                    // объединить группы
+                    if (currentGroupNumber != -1 && keysMap.containsKey(key) && currentGroupNumber != keysMap.get(key)) {
+                        int otherGroupNumber = keysMap.get(key);
+                        LinkedHashSet<String> oldGroup = groupsMap.get(currentGroupNumber);
+                        replaceKeys(keysMap, oldGroup, otherGroupNumber);
+                        groupsMap.remove(currentGroupNumber);
+                        groupsMap.get(otherGroupNumber).addAll(oldGroup);
+                        currentGroupNumber = otherGroupNumber;
+                    }
                 }
                 if (currentGroupNumber == -1) {
                     currentGroupNumber = ++groupsNumber;
                 }
                 for (String key : keys) {
-                    if (!keysMap.containsKey(key)) {
-                        keysMap.put(key, currentGroupNumber);
-                    }
+                    keysMap.put(key, currentGroupNumber);
                 }
                 if (!groupsMap.containsKey(currentGroupNumber)) {
                     LinkedHashSet<String> newGroup = new LinkedHashSet<>();
