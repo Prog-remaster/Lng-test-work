@@ -46,7 +46,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        if (args.length == 0 || args[0] == null) {
+        if (args.length == 0) {
             throw new NullPointerException("filename parameter is not set");
         }
         String filename = args[0];
