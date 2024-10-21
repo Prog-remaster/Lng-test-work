@@ -44,9 +44,14 @@ public class Main {
             while (line != null) {
                 //counter++;
                 //System.out.println(counter);
+                if (line.replaceAll(";", "").isEmpty()) {
+                    line = reader.readLine();
+                    continue;
+                }
                 String[] points = line.split(";");
-                if (Arrays.stream(points).anyMatch(s -> countMatches(s, "\"") != 2 && s.length() != 0)) {
-                    break;
+                if (Arrays.stream(points).anyMatch(s -> countMatches(s, "\"") != 2 && !s.isEmpty())) {
+                    line = reader.readLine();
+                    continue;
                 }
                 List<String> keys = new ArrayList<>();
                 int pointsCounter = 0;
