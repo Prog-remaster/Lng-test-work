@@ -45,7 +45,7 @@ public class Main {
                 //counter++;
                 //System.out.println(counter);
                 String[] points = line.split(";");
-                if (Arrays.stream(points).anyMatch(s -> countMatches(s, "\"") != 2)) {
+                if (Arrays.stream(points).anyMatch(s -> countMatches(s, "\"") != 2 && s.length() != 0)) {
                     break;
                 }
                 List<String> keys = new ArrayList<>();
